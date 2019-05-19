@@ -4,7 +4,8 @@ import random
 import time
 
 def ping(target:str):
-    if os.system("ping -q -c 10 " + target +" > /dev/null") == 0:
+    a = os.system("nmap -sn -PS " + "192.168.0.4 | grep \"Host is up\"")
+    if os.system("nmap -sn -PS " + target.replace('\n',"") + " | grep \"Host is up\"") == 0:
         print(target.replace('\n', "") + " is Up")
     else:
         print(target + " is down")
