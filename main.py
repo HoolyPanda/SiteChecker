@@ -2,6 +2,7 @@ import vk_api
 import os
 import random
 import time
+import Farseer
 
 def ping(target:str):
     a = os.system("nmap -sn -PS " + "192.168.0.4 | grep \"Host is up\"")
@@ -15,6 +16,7 @@ def ping(target:str):
 
 def main():
     i = 0
+    Farseer.SpawnConfig("")
     while True:
         for line in open("config", "r"):
             if line != "":
