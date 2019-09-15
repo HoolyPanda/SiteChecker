@@ -18,7 +18,7 @@ def main():
     i = 0
     Farseer.SpawnConfig(name = "SiteChecker", peerId = 160500068)
     while True:
-        for line in open("config", "r"):
+        for line in open("config.config", "r"):
             if line != "":
                 ping(line)
         i += 1
