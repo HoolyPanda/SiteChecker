@@ -3,16 +3,27 @@ import os
 import random
 import time
 import Farseer
+import requests
+import knocker
+
+Knocker = knocker.Knocker(token= open('./token.cred', 'r').readline())
 
 def ping(target:str):
-    a = os.system("nmap -sn -PS " + "192.168.0.4 | grep \"Host is up\"")
-    if os.system("nmap -sn -PS " + target.replace('\n',"") + " | grep \"Host is up\"") == 0:
+    req = requests.get('https://' + target.replace('\n', '') + '/', verify= False)
+    if req.status_code == 200:
         print("======================================  " + target.replace('\n', "") + " is Up")
     else:
-        print(target + " is down")
-        bot = vk_api.VkApi(token=open("token", "r").readline())
+        msg = target.replace('\n', '') + f' is down, code: {str(req.status_code)}'
+        print(msg)
+        bot = vk_api.VkApi(token=open("./token.cred", "r").readline())
         bot._auth_token()
-        bot.method("messages.send",{"peer_id": 160500068, "random_id" : random.randint(1, 1000),"message": (target.replace('\n', "") + " is down")})
+        for line in open('./peers.cred', 'r').readlines():
+            try:
+                Knocker.SendMsg(messageText= msg, peerId= int(line))
+            except Exception as e:
+                print(str(e))
+                pass
+        # bot.method("messages.send",{"peer_id": 160500068, "random_id" : random.randint(1, 1000),"message": msg})
 
 def main():
     i = 0
@@ -23,9 +34,7 @@ def main():
                 ping(line)
         i += 1
         if i == 12:
-            bot = vk_api.VkApi(token=open("token", "r").readline())
-            bot._auth_token()
-            bot.method("messages.send",{"peer_id": 160500068, "random_id" : random.randint(1, 1000),"message": ("Бот все еще в сети")})
+            Knocker.SendMsg(messageText= 'Бот все еще в сети', peerId= 160500068)
             i = 0
         time.sleep(3600)
 main()
